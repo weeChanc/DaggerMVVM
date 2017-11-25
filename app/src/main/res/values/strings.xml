@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">Dagger&amp;MVVM</string>
+    <string name="app_name">坏牙</string>
+    <string name="exit">退出程序</string>
+    <string name="FABehavior">com.example.saprodontia.Behavior.FABavior</string>
+    <string name="upload">云端上传备份</string>
+    <string name="share">发文件(面对面快传)</string>
+    <string name="receive">收文件(面对面快传)</string>
+    <string name="title_activity_up_load">UpLoadActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_pic">PicActivity</string>
 </resources>
