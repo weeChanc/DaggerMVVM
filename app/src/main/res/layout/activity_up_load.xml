@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context="com.example.saprodontia.ui.main.SendActivity">
+    tools:context="com.example.saprodontia.ui.activities.main.SendActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

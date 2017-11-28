@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context="com.example.saprodontia.ui.main.SendActivity">
+    tools:context="com.example.saprodontia.ui.activities.main.SendActivity">
 
 
         <android.support.design.widget.FloatingActionButton
@@ -36,14 +36,34 @@
                             app:layout_scrollFlags="scroll|enterAlways|snap">
 
                                 <android.support.v7.widget.Toolbar
-                                    android:id="@+id/toolbar"
+                                    android:id="@+id/mainToolbar"
                                     android:layout_width="match_parent"
                                     android:layout_height="56dp"
                                     android:layout_weight="1"
                                     android:background="?attr/colorPrimary"
                                     android:popupTheme="@style/ToolbarPopupTheme"
                                     android:theme="@style/ToolbarTheme"
-                                    app:layout_collapseMode="pin" />
+                                    app:layout_collapseMode="pin">
+
+                                        <RelativeLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent">
+
+
+                                                <TextView
+                                                    android:id="@+id/count"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_alignParentStart="true"
+                                                    android:layout_centerVertical="true"
+                                                    android:text="TextView"
+                                                    android:textColor="@color/colorBackground"
+                                                    android:textSize="16sp" />
+                                        </RelativeLayout>
+
+                                </android.support.v7.widget.Toolbar>
+
+
 
                         </android.support.design.widget.CollapsingToolbarLayout>
 

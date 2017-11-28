@@ -2,6 +2,7 @@ package com.example.daggermvvm
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.example.saprodontia.Utils.QiniuHelper
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +20,8 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.example.daggermvvm", appContext.packageName)
+        val perfix = "/home/steve/";
+//        print("ExampleUnitTest" + .exists())
+        QiniuHelper.upload("/home/steve/android_key.jks",perfix+"key.jks",{ print("success")},{})
     }
 }
