@@ -23,12 +23,12 @@ import java.util.ArrayList
 class AlbumFragment : Fragment() {
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_exhibition, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_exhibition, container, false)
 
         val pictures : MutableList<FileInfo>
         val photoModel = ViewModelProviders.of(this).get(PhotoViewModel::class.java)
-        val path = arguments.getString("path")
+        val path = arguments!!.getString("path")
 
         if(photoModel.photos.size > 0){
             pictures = photoModel.photos

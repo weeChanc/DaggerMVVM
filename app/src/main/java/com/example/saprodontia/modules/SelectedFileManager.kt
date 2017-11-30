@@ -34,7 +34,7 @@ object SelectedFileManager {
         selectedCount = 0
     }
 
-    fun getCheckFile()= checkedFile.toMutableList()
+    fun getSelectedFile()= checkedFile.toMutableList()
 
     fun contains( fileInfo : FileInfo) = checkedFile.contains(fileInfo)
 

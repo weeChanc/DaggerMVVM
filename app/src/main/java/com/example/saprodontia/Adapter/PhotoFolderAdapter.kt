@@ -50,7 +50,15 @@ class PhotoFolderAdapter(private val context: Context , val fileInfos: MutableLi
         val pos = holder.adapterPosition
         holder.count.text = File(fileInfos[pos].location).directoryFileCount().toString()
         holder.folderName.text = fileInfos[pos].name
-        Glide.with(context).load(File(fileInfos.get(pos).location).listFiles()[0].absolutePath).into(holder.image)
+        Glide.with(context).load(getFirstPic(fileInfos.get(pos).location)).into(holder.image)
+    }
+
+    fun getFirstPic(path: String): String? {
+        File(path).listFiles().forEach {
+            if(it.path.endsWith(".jpg") or it.path.endsWith(".png") or it.path.endsWith("bmp") or it.path.endsWith("jpeg"))
+                return it.path
+        }
+        return null
     }
 
     override fun getItemCount(): Int = fileInfos.size

@@ -2,17 +2,14 @@ package com.example.saprodontia.ui.fragments.selected
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.saprodontia.Adapter.AlbumAdapter
 import com.example.saprodontia.Adapter.SelectedItemAdapter
 import com.example.saprodontia.R
-import com.example.saprodontia.View.RecycleDecoration
 import com.example.saprodontia.modules.FileInfo
 import com.example.saprodontia.modules.SelectedFileManager
 import kotlinx.android.synthetic.main.fragment_exhibition.view.*
@@ -25,12 +22,12 @@ class SelectedFragment : Fragment(){
     lateinit var checkdFile : MutableList<FileInfo>
     lateinit var adapter : SelectedItemAdapter
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_exhibition, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_exhibition, container, false)
         val recyclerView = view.recyclerView
 
         view.toolbar.title = "已选择文件"
-        checkdFile = SelectedFileManager.getCheckFile()
+        checkdFile = SelectedFileManager.getSelectedFile()
 
 
         adapter = SelectedItemAdapter(checkdFile)

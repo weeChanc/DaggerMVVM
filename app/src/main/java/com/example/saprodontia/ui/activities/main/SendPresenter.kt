@@ -7,7 +7,6 @@ import com.example.saprodontia.Utils.QiniuHelper
 import com.example.saprodontia.baseMVP.BasePresenter
 import com.example.saprodontia.data.DirectoryContract
 import com.example.saprodontia.di.scope.PerFragment
-import com.example.saprodontia.modules.Directory
 import com.example.saprodontia.modules.FileInfo
 import com.google.gson.Gson
 import com.mobile.utils.Preference
@@ -28,19 +27,7 @@ import javax.inject.Inject
  * Created by steve on 17-11-24.
  */
 
-class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>() , SendContract.Presenter {
-
-    override fun createNewDirectory(root : Directory , parent : Directory , dir: Directory) {
-        parent.directories.add(dir)
-        Preference.save("directory"){
-            "value" - Gson().toJson(root)
-        }
-    }
-
-    override fun getDirectory(): Directory {
-        val raw = Preference.get("directory","value" to "") as String
-        return if (raw != "")( Gson().fromJson(raw,Directory::class.java)) else Directory()
-    }
+class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>(), SendContract.Presenter {
 
     override fun onPresenterCreate() {
     }
@@ -50,7 +37,7 @@ class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>() ,
 
 
     override fun socketShare(infos: List<FileInfo>) {
-        Log.e("SendPresenter","hello dagger2")
+        Log.e("SendPresenter", "hello dagger2")
 
     }
 
@@ -59,7 +46,8 @@ class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>() ,
     val uploadQueue = ConcurrentLinkedQueue<FileInfo>()
     val semaphore = Semaphore(1)
 
-    override fun upload(infos: List<FileInfo>) {
+    override fun upload(path: String,
+                        infos: List<FileInfo>) {
 
         infos.forEach {
             if (!uploadQueue.contains(it)) {
@@ -67,26 +55,31 @@ class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>() ,
             }
         }
 
-        if(finished) {
-            Task().start()
+        if (finished) {
+            Task(path).start()
         }
         finished = false
 
     }
 
-    inner class Task : Thread() {
+    inner class Task(val path: String) : Thread() {
         override fun run() {
-            while(uploadQueue.size > 0){
+            while (uploadQueue.size > 0) {
                 semaphore.acquire()
                 val info = uploadQueue.poll()
-                QiniuHelper.upload(info.location,info.name,
-                        { name -> semaphore.release() ; view?.uploadFinish(name)},
-                        {})
+                QiniuHelper.upload(info.location, path + info.name, { name ->
+                    semaphore.release()
+                    view?.uploadFinish(name)
+                    Preference.save("directory"){
+                        "dirty" - "true"
+                    } }, {})
+
             }
             finished = true
             view?.allTaskFinished()
         }
     }
+
 
     class SendModel : ViewModel() {
 

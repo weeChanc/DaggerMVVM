@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by steve on 17-11-26.
  */
-class MediaFragment() : BaseMVPFragment<MediaContract.Presenter, MediaContract.View>(), MediaContract.View {
+class MediaFragment : BaseMVPFragment<MediaContract.Presenter, MediaContract.View>(), MediaContract.View {
 
 
     lateinit var type: MediaFragmentType
@@ -42,7 +42,7 @@ class MediaFragment() : BaseMVPFragment<MediaContract.Presenter, MediaContract.V
     }
 
     override fun onPrepared() {
-        Permission.STORAGE.get(activity){ isPassed ->
+        Permission.STORAGE.get(activity!!){ isPassed ->
             if(isPassed && mPresenter != null){
                 mPresenter?.getMediaInfos(type)
             }
@@ -59,13 +59,13 @@ class MediaFragment() : BaseMVPFragment<MediaContract.Presenter, MediaContract.V
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.item_pager, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.item_pager, container, false)
         val recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
-        type = arguments.getSerializable("type") as MediaFragmentType
+        type = arguments!!.getSerializable("type") as MediaFragmentType
 
         if(type == MediaFragmentType.PHOTO){
-            adapter = PhotoFolderAdapter(activity,fileInfos)
+            adapter = PhotoFolderAdapter(activity!!,fileInfos)
         }else{
             adapter = ItemAdapter(fileInfos)
         }

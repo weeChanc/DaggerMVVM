@@ -37,7 +37,8 @@ abstract class BaseMVPFragment<P : BaseContract.Presenter<V>, V : BaseContract.V
         injectDependencies()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //如果在他之前获取Viewmodel 的话 ，则会不一样
