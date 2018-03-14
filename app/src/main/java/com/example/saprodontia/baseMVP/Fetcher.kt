@@ -70,7 +70,7 @@ class Fetcher @Inject constructor() {
     fun <T> Observable<T>.fetchNewThread(onNext: (T) -> Unit = {},
                                          onError: (Throwable) -> Unit = {},
                                          onComplete: () -> Unit = {}, onSubscribe:
-                                         (Disposable) -> Unit = {}): Disposable? =
+                                         (Disposable) -> Unit = {}): Disposable =
             subscribeOn(Schedulers.newThread()).
                     observeOn(AndroidSchedulers.mainThread()).
                     subscribe(onNext, onError, onComplete, onSubscribe)

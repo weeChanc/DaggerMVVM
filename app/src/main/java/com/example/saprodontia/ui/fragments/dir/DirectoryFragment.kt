@@ -1,44 +1,40 @@
-package com.example.saprodontia.ui.fragments.dir
+package com.xt.directoryfragment
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 
-import com.example.saprodontia.Adapter.DirectoryAdapter
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.saprodontia.R
-import com.example.saprodontia.data.DirectoryManager
-
-import android.text.InputType
-import android.view.*
-import com.afollestad.materialdialogs.MaterialDialog
-import com.example.saprodontia.data.Directory
-import com.example.saprodontia.data.Directory.Companion.DIR
-import com.example.saprodontia.data.DirectoryManager.Companion.REMOTE
+import com.xt.directoryfragment.MFile.Companion.DIR
 import kotlinx.android.synthetic.main.dialog_dir.*
 
 
 /**
- * Created by steve on 17-11-29.
+ * Created by steve on 18-1-28.
  */
 class DirectoryFragment() : android.support.v4.app.DialogFragment() {
 
-    var manager : DirectoryManager? = null
+    lateinit var manager: DirectoryManager
     private lateinit var adapter: DirectoryAdapter
     private var ensureListener: ((path: String) -> Unit)? = null
-    private lateinit var model: DirViewModel
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        model = ViewModelProviders.of(this).get(DirViewModel::class.java)
         return inflater.inflate(R.layout.dialog_dir, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
-        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = adapter
+        recyclerView.emptyView = empty
+
     }
 
     override fun onResume() {
@@ -51,8 +47,8 @@ class DirectoryFragment() : android.support.v4.app.DialogFragment() {
 
     fun setup() {
 
-        manager = model.manager
-        adapter = model.adapter
+        manager = DirectoryManager
+        adapter = DirectoryAdapter(context!!, manager.root, true)
 
         this.dialog.setOnKeyListener { dialog, keyCode, event ->
 
@@ -67,9 +63,20 @@ class DirectoryFragment() : android.support.v4.app.DialogFragment() {
         }
 
         adapter.setOnPathChangListenner {
-            currentDir.text = it
+            currentDir.animate().setDuration(200).translationY(-50f).alpha(0f).setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    currentDir.translationY = 50f
+                    var dir = it.substring(0, it.length - 1)
+                    if (dir == "") dir = "根目录"
+                    currentDir.text = dir
+                    currentDir.animate().setDuration(200).translationY(0f).alpha(1f).setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            super.onAnimationEnd(animation)
+                        }
+                    })
+                }
+            })
         }
-
 
 
         add.setOnClickListener { showDiaglog() }
@@ -77,32 +84,28 @@ class DirectoryFragment() : android.support.v4.app.DialogFragment() {
 
         ensure.setOnClickListener {
             ensureListener?.invoke(adapter.currentDir.path)
-            dismiss()
+            ensure.postDelayed({dismiss()},300)
         }
 
-        currentDir.text = adapter.currentDir.path
+        currentDir.text = "根目录"
     }
 
 
     fun showDiaglog() {
-        MaterialDialog.Builder(context!!).title("新建文件夹")
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input("文件夹名", "", false, { _, input ->
-                    val dir = Directory(adapter.currentDir.path + "${input.toString()}/",type = DIR)
-                    manager?.mkdir(dir)
-                    DirectoryManager(REMOTE).mkdir(dir)
-                    adapter.notifyDataSetChanged()
-                }).show()
+        InputDialog.InputDialogBuilder(this.context!!) {
+            title = "输入文件夹"
+            onclick = {
+                val dir = MFile(adapter.currentDir.path + "${contentText}/", type = DIR, size = 0)
+                manager.mkdir(dir)
+                dismiss()
+                adapter.notifyDataSetChanged()
+            }
+        }.build().show()
+
     }
 
     fun setEnsureListener(listener: ((path: String) -> Unit)?) {
-        //VIEW MODEL DIDN'T INIT HERE
         ensureListener = listener
-    }
-
-    class DirViewModel : ViewModel() {
-        val manager = DirectoryManager(DirectoryManager.LOCAL)
-        var adapter = DirectoryAdapter(manager.root,true)
     }
 
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -16,9 +17,12 @@ import com.example.saprodontia.Utils.ToastUtil
 import com.example.saprodontia.baseMVP.BaseMVPActivity
 import com.example.saprodontia.modules.SelectedFileManager
 import com.example.saprodontia.ui.activities.cloud.CloudActivity
-import com.example.saprodontia.ui.fragments.dir.DirectoryFragment
+
 import com.example.saprodontia.ui.fragments.media.MediaFragmentType
 import com.example.saprodontia.ui.fragments.selected.SelectedFragment
+import com.mobile.utils.showToast
+import com.mobile.utils.toast
+import com.xt.directoryfragment.DirectoryFragment
 import kotlinx.android.synthetic.main.activity_send.*
 import kotlinx.android.synthetic.main.dialog.view.*
 
@@ -26,6 +30,10 @@ import java.util.*
 import javax.inject.Inject
 
 class SendActivity : BaseMVPActivity<SendContract.Presenter, SendContract.View>(), SendContract.View {
+    override fun uploadFailed(errormsg: String) {
+        showToast("上传失败,请检查网络链接")
+    }
+
     override fun uploadStart() {
     }
 

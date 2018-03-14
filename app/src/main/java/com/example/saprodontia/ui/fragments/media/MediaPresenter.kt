@@ -6,11 +6,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v4.app.Fragment
 import com.example.saprodontia.baseMVP.BasePresenter
 import com.example.saprodontia.di.scope.PerFragment
-import com.example.saprodontia.modules.ContentModules
+import com.example.saprodontia.modules.MediaRepositroy
 import com.example.saprodontia.modules.FileInfo
-import com.mobile.utils.permission.Permission
-import com.mobile.utils.permission.PermissionMan
-import com.mobile.utils.permission.PermissionTask
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -29,11 +26,11 @@ class MediaPresenter @Inject constructor() : MediaContract.Presenter, BasePresen
             val source: Observable<FileInfo>
 
             when (type) {
-                MediaFragmentType.APPS -> source = ContentModules.getApplications()
-                MediaFragmentType.DOCUMENT -> source = ContentModules.getDocument()
-                MediaFragmentType.VIDEO -> source = ContentModules.getVideo()
-                MediaFragmentType.MUSIC -> source = ContentModules.getMusic()
-                MediaFragmentType.PHOTO -> source = ContentModules.getPhotos()
+                MediaFragmentType.APPS -> source = MediaRepositroy.getApplications()
+                MediaFragmentType.DOCUMENT -> source = MediaRepositroy.getDocument()
+                MediaFragmentType.VIDEO -> source = MediaRepositroy.getVideo()
+                MediaFragmentType.MUSIC -> source = MediaRepositroy.getMusic()
+                MediaFragmentType.PHOTO -> source = MediaRepositroy.getPhotos()
             }
 
             val fileInfos = mutableListOf<FileInfo>()

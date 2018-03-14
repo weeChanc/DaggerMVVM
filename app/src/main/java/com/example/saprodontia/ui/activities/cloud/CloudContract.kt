@@ -2,7 +2,8 @@ package com.example.saprodontia.ui.activities.cloud
 
 import android.provider.ContactsContract
 import com.example.saprodontia.baseMVP.BaseContract
-import com.example.saprodontia.data.Directory
+
+import com.xt.directoryfragment.MFile
 
 /**
  * Created by steve on 17-11-28.
@@ -10,7 +11,7 @@ import com.example.saprodontia.data.Directory
 interface CloudContract{
 
     interface View : BaseContract.View{
-        fun onFinish(root  :Directory)
+        fun onFinish(root  :MFile)
     }
 
     interface Presenter : BaseContract.Presenter<View>{

@@ -12,6 +12,7 @@ interface SendContract {
     interface View : BaseContract.View{
         fun uploadStart()
         fun uploadFinish(name : String )
+        fun uploadFailed(fileName : String )
         fun allTaskFinished()
     }
 

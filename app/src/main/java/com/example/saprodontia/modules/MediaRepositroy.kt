@@ -1,42 +1,49 @@
 package com.example.saprodontia.modules
 
 import android.content.ContentResolver
-import android.content.pm.ApplicationInfo
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.provider.MediaStore
-import android.util.Log
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import com.example.saprodontia.Application.App
 import com.example.saprodontia.R
 import com.example.saprodontia.Utils.MathUtil
 import com.mobile.utils.toDrawable
 import io.reactivex.Observable
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
 import java.io.File
-import kotlin.properties.Delegates
 
 /**
  * Created by steve on 17-11-22.
  */
 
-class ContentModules {
+class MediaRepositroy {
 
     companion object {
 
-        val excel = App.app.getDrawable(R.drawable.excel)
-        val word = App.app.getDrawable(R.drawable.word)
-        val pdf = App.app.getDrawable(R.drawable.pdf)
-        val ppt = App.app.getDrawable(R.drawable.powerpoint)
-        val unknow = App.app.getDrawable(R.drawable.unknow)
-        val music = App.app.getDrawable(R.drawable.music)
 
-        
-        private val mContentResolver: ContentResolver = App.app.contentResolver
+        val excel = App.ctx.getDrawable(R.drawable.excel)
+        val word = App.ctx.getDrawable(R.drawable.word)
+        val pdf = App.ctx.getDrawable(R.drawable.pdf)
+        val ppt = App.ctx.getDrawable(R.drawable.powerpoint)
+        val unknow = App.ctx.getDrawable(R.drawable.unknow)
+        val image = App.ctx.getDrawable(R.drawable.image)
+        val music = App.ctx.getDrawable(R.drawable.music)
+        val movie = App.ctx.getDrawable(R.drawable.movie)
+        val app = App.ctx.getDrawable(R.drawable.app)
+
+        fun getIconbyFormat(format: String): Drawable {
+            when (format) {
+                ".xls", "xlsx" -> return excel
+                ".doc", ".docx" -> return word
+                ".pdf" -> return pdf
+                ".ppt", ".pptx" -> return ppt
+                ".mp4", ".avi", ".mpeg" -> return movie
+                ".mp3", ".wav", ".midi", ".wma", ".flac" -> return music
+                else -> return unknow
+            }
+        }
+
+
+        private val mContentResolver: ContentResolver = App.ctx.contentResolver
 
         fun getMusic(): Observable<FileInfo> {
 
@@ -49,13 +56,18 @@ class ContentModules {
                 cursor.moveToFirst()
                 do {
 
-                    val initSize = (cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE))).toLong()
-                    val size = MathUtil.bytoKbOrMb(initSize)
+                    var initSize = (cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE))).toLong()
+
+
                     val name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
                     val icon = music
                     val location = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
 
-                    val info = FileInfo(name,location,size,initSize,icon=icon)
+
+                    if (initSize == 0L) initSize = File(location).length()
+
+                    val size = MathUtil.bytoKbOrMb(initSize)
+                    val info = FileInfo(name, location, size, initSize, icon = icon)
 
                     emitter.onNext(info)
 
@@ -84,22 +96,14 @@ class ContentModules {
 
                 if (cursor != null && cursor.moveToFirst()) {
                     do {
-
-
                         val location = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA))
                         val format = location.substring(location.indexOf('.'), location.length)
                         val initSize = java.lang.Long.parseLong(cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE)))
                         val size = MathUtil.bytoKbOrMb(initSize)
                         val name = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE))
-                        val info = FileInfo(name,location,size,initSize)
+                        val info = FileInfo(name, location, size, initSize)
 
-                        when (format) {
-                            ".xls" -> info.icon = excel
-                            ".doc" -> info.icon = word
-                            ".pdf" -> info.icon = pdf
-                            ".ppt" -> info.icon = ppt
-                            else -> info.icon = unknow
-                        }
+                        info.icon = getIconbyFormat(format)
 
                         emitter.onNext(info)
 
@@ -140,7 +144,7 @@ class ContentModules {
                         val size = MathUtil.bytoKbOrMb(initSize)
                         val icon = MediaStore.Video.Thumbnails.getThumbnail(mContentResolver, id, MediaStore.Video.Thumbnails.MINI_KIND, ops).toDrawable()
 
-                        val info = FileInfo(name,location,size,initSize,id,icon)
+                        val info = FileInfo(name, location, size, initSize, id, icon)
 
                         emitter.onNext(info)
 
@@ -173,11 +177,11 @@ class ContentModules {
                 }
                 cursor.close()
 
-                addPath.forEach{
+                addPath.forEach {
 
                     val name = it.substring(it.lastIndexOf('/') + 1, it.length)
                     val location = it
-                    val folderInfo = FileInfo(name,location)
+                    val folderInfo = FileInfo(name, location)
                     emitter.onNext(folderInfo)
                 }
 
@@ -189,27 +193,21 @@ class ContentModules {
 
         fun getApplications(): Observable<FileInfo> {
 
-            val pm = App.app.packageManager
+            val pm = App.ctx.packageManager
             var sourceDir: String
 
             var infos = pm.getInstalledApplications(0)
 
-            val info = infos.filter {
-                it.flags and ApplicationInfo.FLAG_SYSTEM > 0
-            }
-
             return Observable.create<FileInfo> { emitter ->
-                
-                for (i in info) {
 
-
+                for (i in infos) {
                     sourceDir = i.sourceDir
                     val initSize = File(sourceDir).length()
                     val icon = i.loadIcon(pm)
                     val location = sourceDir
                     val name = i.loadLabel(pm).toString()
                     val size = MathUtil.bytoKbOrMb(initSize)
-                    val app = FileInfo(name,location,size,initSize,icon=icon)
+                    val app = FileInfo(name, location, size, initSize, icon = icon)
                     emitter.onNext(app)
                 }
 

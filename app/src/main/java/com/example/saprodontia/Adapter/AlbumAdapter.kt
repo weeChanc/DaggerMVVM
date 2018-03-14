@@ -24,6 +24,7 @@ import com.mobile.utils.toggleVisibility
 
 class AlbumAdapter(private val pictures: MutableList<FileInfo>) : AutoNotifyAdapter<FileInfo, AlbumAdapter.AlbumHolder>(pictures) {
 
+
     private lateinit var context : Context
 
 
@@ -39,7 +40,7 @@ class AlbumAdapter(private val pictures: MutableList<FileInfo>) : AutoNotifyAdap
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AlbumHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumHolder {
         this.context = parent?.context!!
         val holder: AlbumHolder
         val view = LayoutInflater.from(parent.context).inflate(R.layout.type_two, parent, false)

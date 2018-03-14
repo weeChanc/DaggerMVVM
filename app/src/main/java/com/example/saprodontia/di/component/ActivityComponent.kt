@@ -3,6 +3,7 @@ package com.example.saprodontia.di.component
 import com.example.saprodontia.di.modules.ActivityModule
 import com.example.saprodontia.di.scope.PerActivity
 import com.example.saprodontia.ui.activities.cloud.CloudActivity
+import com.example.saprodontia.ui.activities.down.DownloadActivity
 import com.example.saprodontia.ui.activities.main.SendActivity
 import dagger.Subcomponent
 
@@ -17,6 +18,8 @@ interface ActivityComponent{
     fun inject(activity: SendActivity)
 
     fun inject(activity:CloudActivity)
+
+    fun inject(activity: DownloadActivity)
 
 
 }

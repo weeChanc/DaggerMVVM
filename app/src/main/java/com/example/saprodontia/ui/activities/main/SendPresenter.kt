@@ -6,6 +6,7 @@ import com.example.saprodontia.Constant.Constant
 import com.example.saprodontia.Utils.QiniuHelper
 import com.example.saprodontia.baseMVP.BasePresenter
 import com.example.saprodontia.data.DirectoryContract
+
 import com.example.saprodontia.di.scope.PerFragment
 import com.example.saprodontia.modules.FileInfo
 import com.google.gson.Gson
@@ -15,6 +16,9 @@ import com.mobile.utils.toast
 import com.qiniu.android.storage.*
 import com.qiniu.android.storage.persistent.FileRecorder
 import com.qiniu.util.Auth
+import com.xt.directoryfragment.DirectoryManager
+import com.xt.directoryfragment.MFile
+import com.xt.directoryfragment.MFile.Companion.FILE
 import org.jetbrains.anko.db.NULL
 import java.io.File
 import java.util.*
@@ -46,8 +50,7 @@ class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>(), 
     val uploadQueue = ConcurrentLinkedQueue<FileInfo>()
     val semaphore = Semaphore(1)
 
-    override fun upload(path: String,
-                        infos: List<FileInfo>) {
+    override fun upload(path: String, infos: List<FileInfo>) {
 
         infos.forEach {
             if (!uploadQueue.contains(it)) {
@@ -67,12 +70,15 @@ class SendPresenter @Inject constructor() : BasePresenter<SendContract.View>(), 
             while (uploadQueue.size > 0) {
                 semaphore.acquire()
                 val info = uploadQueue.poll()
-                QiniuHelper.upload(info.location, path + info.name, { name ->
-                    semaphore.release()
-                    view?.uploadFinish(name)
-                    Preference.save("directory"){
-                        "dirty" - "true"
-                    } }, {})
+                QiniuHelper.upload(info.location, path + info.name,
+                        onSuccess = { name ->
+                            semaphore.release()
+                            view?.uploadFinish(name)
+                            val last = info.location.lastIndexOf(".")
+                            val type = if(last!=-1)info.location.substring(last,info.location.length)else FILE
+                            DirectoryManager.mkdir(MFile(path + info.name,type = type,size = File(info.location).length()))
+                        },
+                        onFailed = { view?.uploadFailed(it)})
 
             }
             finished = true

@@ -22,7 +22,7 @@ import java.io.Serializable
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
-        // Context of the app under test.
+        // Context of the ctx under test.
         val manager = DirectoryManager()
         manager.mkdir(DirectoryManager.Directory("/home/"))
         print(manager.createJson())

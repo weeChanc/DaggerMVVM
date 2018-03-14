@@ -20,13 +20,13 @@
 //class MyAdapter(context: Context, private val mDatas: MutableList<FileInfo>) : AutoNotifyAdapter<FileInfo, MyAdapter.ViewHolder>(mDatas) {
 //
 ////    private val sendDatas: ArrayList<FileInfo>
-//    private val app: App
+//    private val ctx: App
 //    private var mOnSenDatasChangedListener: onSenDatasChangedListener? = null
 //
 //
 //    init {
-//        app = context.applicationContext as App
-////        sendDatas = app.senDatas!!
+//        ctx = context.applicationContext as App
+////        sendDatas = ctx.senDatas!!
 //
 //    }
 //

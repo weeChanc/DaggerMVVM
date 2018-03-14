@@ -36,7 +36,7 @@ class SelectedItemAdapter(val mDatas : MutableList<FileInfo>) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SelectedHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.item_exhibition,parent,false)
         context = parent?.context
         return SelectedHolder(view)

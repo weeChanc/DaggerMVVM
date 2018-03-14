@@ -33,7 +33,7 @@ open class BaseActivity : AppCompatActivity() {
         when (id) {
             R.id.download -> startActivity(Intent(this@BaseActivity, Cloud::class.java))
 
-            R.id.upload -> startActivity(Intent(this@BaseActivity, UpLoadActivity::class.java))
+//            R.id.upload -> startActivity(Intent(this@BaseActivity, UpLoadActivity::class.java))
         }
         return true
     }
